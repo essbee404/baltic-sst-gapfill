@@ -185,11 +185,8 @@ Some of the most useful lessons came from things that went wrong:
   falling after 8 epochs. The differences between the U-Net and spatio-temporal interpolation in RMSE
   are within what a second seed might change.
 
-**Try it:** change `gaps.frac_range` in `config.yaml` (e.g. `[0.7, 0.9]`) and retrain, or evaluate the
-existing model at a fixed gap fraction with `python src/evaluate.py --frac 0.8 --out results/metrics_frac08.json`.
-
 ## Notes
 
-Built with AI coding assistance (Claude); the design choices, checks and write-up were reviewed by me.
+Built with the help of AI coding assistance (Claude); the design choices, checks and write-up were coauthored and reviewed by me.
 Data: NOAA OISST v2.1 (Huang et al., 2021, *J. Climate*). Heatwave definition: Hobday et al., 2016,
 *Progress in Oceanography*.
