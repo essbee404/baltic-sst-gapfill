@@ -1,0 +1,49 @@
+seed: 0
+
+data:
+  erddap_url: https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180.nc
+  lat: [53.5, 66.0]
+  lon: [9.5, 30.5]
+  years: [1982, 2023]
+  raw_dir: data/raw
+  processed: data/baltic_oisst.nc
+  ice_threshold: 0.15          # pixels with ice concentration above this are excluded everywhere
+  clim_years: [1982, 2011]     # 30-year baseline for climatology and MHW threshold (Hobday et al. 2016)
+
+split:
+  train_years: [1982, 2013]
+  val_years: [2014, 2016]
+  test_years: [2017, 2023]
+  # Spatial split. Test = Gulf of Bothnia (never seen in training, not even as input).
+  # Buffer = Aland/Archipelago Sea + Gulf of Finland, excluded from both to limit spatial leakage;
+  # this also drops the Norwegian Sea corner and Lake Ladoga, which are not Baltic.
+  test_region_min_lat: 60.5
+  test_region_min_lon: 16.0
+  buffer_min_lat: 59.5
+  gulf_of_finland_min_lon: 22.5
+
+gaps:
+  # Synthetic clouds: spatially correlated blobs, independent per day.
+  frac_range: [0.3, 0.7]       # fraction of ocean hidden on each day; change this for the gap-fraction ablation
+  blob_sigma: 3.0              # Gaussian filter width in grid cells (~0.75 deg) controlling blob size
+  half_window: 3               # model sees days t-3 .. t+3
+  p_drop_day: 0.3              # each non-target day is missing entirely with this probability (irregular sampling)
+
+model:
+  base_channels: 32
+  levels: 3
+
+train:
+  epochs: 8
+  batch_size: 32
+  lr: 2.0e-3
+  weight_decay: 1.0e-4
+  num_threads: 8
+  device: auto                 # cuda > mps (Apple GPU) > cpu
+
+eval:
+  seed: 1234                   # fixed seed so every method sees the same cloud masks
+  mhw_min_duration: 5
+  mhw_max_gap: 2
+  mhw_percentile: 90
+  example_date: "2018-07-30"

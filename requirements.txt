@@ -1,0 +1,9 @@
+torch>=2.1
+numpy
+scipy
+pandas
+xarray
+netCDF4
+dask
+matplotlib
+pyyaml
